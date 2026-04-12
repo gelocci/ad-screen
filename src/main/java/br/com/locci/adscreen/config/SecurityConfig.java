@@ -2,6 +2,8 @@ package br.com.locci.adscreen.config;
 
 import br.com.locci.adscreen.auth.filter.JwtAuthFilter;
 import br.com.locci.adscreen.user.service.DatabaseUserDetailsService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +11,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
 
 @Configuration
 public class SecurityConfig {
@@ -39,6 +44,7 @@ public class SecurityConfig {
                     "/auth/login",
                     "/activate",
                     "/activate/status",
+                    "/login",
                     "/error",
                     "/css/**",
                     "/js/**",
@@ -48,11 +54,27 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyRequest().authenticated()
             )
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(authenticationEntryPoint())
+            )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable);
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (HttpServletRequest request, HttpServletResponse response, 
+                org.springframework.security.core.AuthenticationException authException) -> {
+            String redirectUrl = request.getRequestURI();
+            String query = request.getQueryString();
+            if (query != null) {
+                redirectUrl += "?" + query;
+            }
+            response.sendRedirect("/login?redirect=" + java.net.URLEncoder.encode(redirectUrl, "UTF-8"));
+        };
     }
 
     @Bean

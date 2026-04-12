@@ -61,7 +61,7 @@ public class ActivatePageController {
 
         model.addAttribute("status", session.getStatus().name());
         model.addAttribute("screenName", screen.getName());
-        model.addAttribute("sessionId", session.getId().toString());
+        model.addAttribute("activationToken", session.getToken());
         model.addAttribute("pairUrl", pairUrl);
         model.addAttribute("qrCodeBase64", qrCodeBase64);
 
@@ -69,8 +69,8 @@ public class ActivatePageController {
     }
 
     @GetMapping("/activate/status")
-    public ResponseEntity<ActivationStatusResponse> status(@RequestParam("sessionId") UUID sessionId) {
-        ActivationSession session = activationSessionService.findById(sessionId);
+    public ResponseEntity<ActivationStatusResponse> status(@RequestParam("token") String token) {
+        ActivationSession session = activationSessionService.findByToken(token);
         return ResponseEntity.ok(new ActivationStatusResponse(session.getStatus().name()));
     }
 

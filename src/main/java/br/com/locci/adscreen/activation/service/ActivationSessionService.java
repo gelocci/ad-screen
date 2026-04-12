@@ -73,6 +73,10 @@ public class ActivationSessionService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<ActivationSession> findOptionalById(UUID id) {
+        return repository.findById(id);
+    }
+
     public ActivationSession findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Sessão de ativação não encontrada."));

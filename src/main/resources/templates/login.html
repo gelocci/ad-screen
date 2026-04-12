@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Entrar — ad-screen</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="activate-layout">
+  <div class="card card-login">
+    <div class="text-center mb-2">
+      <span class="brand-label">ad-screen</span>
+      <h1 class="mt-2">Entrar</h1>
+      <p class="text-muted">Faça login para continuar.</p>
+    </div>
+
+    <hr class="divider"/>
+
+    <div id="error-msg" class="alert alert-danger mb-2" style="display:none;">
+      Usuário ou senha inválidos.
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" autocomplete="username" required/>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Senha</label>
+      <input type="password" id="password" autocomplete="current-password" required/>
+    </div>
+
+    <div class="actions">
+      <button id="btn-login" type="button" class="btn btn-primary w-full">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const email    = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('error-msg');
+
+    errorMsg.style.display = 'none';
+
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+        window.location.href = redirect;
+      } else {
+        errorMsg.style.display = 'block';
+      }
+    } catch (e) {
+      errorMsg.style.display = 'block';
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      document.getElementById('btn-login').click();
+    }
+  });
+</script>
+</body>
+</html>

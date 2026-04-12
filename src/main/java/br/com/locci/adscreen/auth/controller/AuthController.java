@@ -104,7 +104,7 @@ public class AuthController {
     private void addRefreshTokenCookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie("refresh_token", token);
         cookie.setHttpOnly(true);
-        cookie.setPath("/auth/refresh");
+        cookie.setPath("/");
         cookie.setMaxAge(604800);
         response.addCookie(cookie);
     }

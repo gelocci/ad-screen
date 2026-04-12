@@ -62,11 +62,11 @@
 </div>
 
 <script th:if="${status == 'PENDING'}" th:inline="javascript">
-  const sessionId = [[${sessionId}]];
+  const activationToken = [[${activationToken}]];
 
   setInterval(async () => {
     try {
-      const response = await fetch('/activate/status?sessionId=' + sessionId, {
+      const response = await fetch('/activate/status?token=' + activationToken, {
         headers: { 'Accept': 'application/json' }
       });
 
