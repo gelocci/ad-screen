@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${pageTitle}">Parear tela</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="activate-layout">
+  <div class="card">
+    <div class="text-center mb-2">
+      <span class="brand-label">ad-screen</span>
+      <h1 class="mt-2">Parear tela</h1>
+      <p class="text-muted">Confirme a ativação deste dispositivo.</p>
+    </div>
+
+    <hr class="divider"/>
+
+    <div th:if="${error}" class="alert alert-danger mb-2" th:text="${error}"></div>
+    <div th:if="${success}" class="alert alert-success mb-2" th:text="${success}"></div>
+
+    <div class="form-group" th:if="${activationCode}">
+      <label>Código de ativação</label>
+      <input type="text" th:value="${activationCode}" readonly/>
+    </div>
+
+    <div class="form-group" th:if="${status}">
+      <label>Status</label>
+      <input type="text" th:value="${status}" readonly/>
+    </div>
+
+    <div class="form-group" th:if="${expiresAt}">
+      <label>Expira em</label>
+      <input type="text" th:value="${expiresAt}" readonly/>
+    </div>
+
+    <form method="post" th:action="@{/pair/confirm}" th:if="${activationToken}">
+      <input type="hidden" name="token" th:value="${activationToken}"/>
+
+      <div class="form-group" th:if="${organizations != null and #lists.size(organizations) > 1}">
+        <label for="organizationId">Organização</label>
+        <select id="organizationId" name="organizationId" required>
+          <option value="">Selecione...</option>
+          <option th:each="org : ${organizations}"
+                  th:value="${org.id}"
+                  th:text="${org.name}">
+          </option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button type="submit"
+                class="btn btn-primary w-full"
+                th:disabled="${confirmed} or ${status == 'EXPIRED'}">
+          Confirmar ativação
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

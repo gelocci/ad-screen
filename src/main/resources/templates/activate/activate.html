@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ativação do dispositivo — ad-screen</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="activate-layout">
+  <div class="card">
+
+    <div th:if="${status == 'ACTIVE'}">
+      <div class="text-center mb-2">
+        <span class="brand-label">ad-screen</span>
+        <h1 class="mt-2">Dispositivo ativado</h1>
+        <p class="text-muted">Este dispositivo já está associado e pronto para uso.</p>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="activate-code-block">
+        <span class="badge badge-success">Ativo</span>
+      </div>
+    </div>
+
+    <div th:if="${status != 'ACTIVE'}">
+      <div class="text-center mb-2">
+        <span class="brand-label">ad-screen</span>
+        <h1 class="mt-2">Ativar este dispositivo</h1>
+        <p class="text-muted">Escaneie o QR Code ou use o botão abaixo para abrir a ativação em outra aba.</p>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="activate-code-block">
+        <div class="qr-wrapper">
+          <img th:src="${qrCodeBase64}" alt="QR Code de ativação" class="qr-image"/>
+        </div>
+
+        <span class="badge badge-pending" th:if="${status == 'PENDING'}">Aguardando ativação</span>
+        <span class="badge badge-expired" th:if="${status == 'EXPIRED'}">Código expirado</span>
+        <span class="badge badge-success" th:if="${status == 'CONFIRMED'}">Ativado</span>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="activate-actions">
+        <a th:href="${pairUrl}"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn btn-primary">
+          Abrir ativação em outra aba
+        </a>
+      </div>
+
+      <p class="helper-text">
+        Você também pode escanear o QR Code com o celular para continuar a ativação.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script th:if="${status == 'PENDING'}" th:inline="javascript">
+  const sessionId = [[${sessionId}]];
+
+  setInterval(async () => {
+    try {
+      const response = await fetch('/activate/status?sessionId=' + sessionId, {
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.status === 'CONFIRMED') {
+        window.location.reload();
+      }
+
+      if (data.status === 'EXPIRED') {
+        window.location.reload();
+      }
+    } catch (e) {
+    }
+  }, 4000);
+</script>
+</body>
+</html>
