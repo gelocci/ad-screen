@@ -11,6 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,20 +40,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String token = extractTokenFromCookie(request);
 
         if (token != null && jwtService.isValid(token)) {
-            String email = jwtService.extractSubject(token);
+            try {
+                String email = jwtService.extractSubject(token);
 
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                    UsernamePasswordAuthenticationToken auth =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
 
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (UsernameNotFoundException e) {
+                // token válido mas usuário não existe mais no banco
+                // limpa o cookie inválido
+                clearCookie(response, "access_token");
+                clearCookie(response, "refresh_token");
             }
         }
 
@@ -60,14 +68,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private String extractTokenFromCookie(HttpServletRequest request) {
-        if (request.getCookies() == null) {
-            return null;
-        }
-
+        if (request.getCookies() == null) return null;
         return Arrays.stream(request.getCookies())
                 .filter(c -> "access_token".equals(c.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private void clearCookie(HttpServletResponse response, String name) {
+        Cookie cookie = new Cookie(name, "");
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }

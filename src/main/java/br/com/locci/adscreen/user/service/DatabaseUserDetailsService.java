@@ -22,12 +22,12 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         AppUser user = appUserRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
 
+        String role = user.isSuperAdmin() ? "ROLE_SUPERADMIN" : "ROLE_USER";
+
         return User.builder()
                 .username(user.getEmail())
                 .password(user.getPasswordHash())
-                .authorities(List.of(
-                        new SimpleGrantedAuthority("ROLE_" + user.getGlobalRole().name())
-                ))
+                .authorities(List.of(new SimpleGrantedAuthority(role)))
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)

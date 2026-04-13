@@ -52,7 +52,7 @@ public class SecurityConfig {
                     "/actuator/info",
                     "/register"
                 ).permitAll()
-                .requestMatchers("/admin/**").hasRole("SUPERADMIN")
+                .requestMatchers("/admin/**").authenticated()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex

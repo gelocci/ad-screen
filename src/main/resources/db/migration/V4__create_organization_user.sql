@@ -10,6 +10,5 @@ CREATE TABLE organization_user (
 
 CREATE INDEX idx_organization_user_user_id
     ON organization_user(user_id);
-
 CREATE INDEX idx_organization_user_organization_id
     ON organization_user(organization_id);

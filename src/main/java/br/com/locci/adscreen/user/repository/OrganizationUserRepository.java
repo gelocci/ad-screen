@@ -22,4 +22,12 @@ public interface OrganizationUserRepository extends JpaRepository<OrganizationUs
         where u.email = :email
     """)
     List<OrganizationUser> findByUserEmailFetchOrganization(String email);
+
+    @Query("""
+        select ou
+        from OrganizationUser ou
+        join fetch ou.user u
+        where ou.id.organizationId = :organizationId
+    """)
+    List<OrganizationUser> findByOrganizationIdFetchUser(UUID organizationId);
 }

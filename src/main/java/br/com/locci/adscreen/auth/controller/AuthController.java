@@ -54,7 +54,7 @@ public class AuthController {
         addAccessTokenCookie(response, accessToken);
         addRefreshTokenCookie(response, refreshToken.getToken());
 
-        return new LoginResponse(user.getEmail(), user.getName(), user.getGlobalRole().name());
+        return new LoginResponse(user.getEmail(), user.getName(), user.isSuperAdmin() ? "SUPERADMIN" : null);
     }
 
     @PostMapping("/refresh")

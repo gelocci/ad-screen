@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Novo usuário — ad-screen admin</title>
+  <title>Novo usuário — ad-screen</title>
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,7 +12,7 @@
     <div class="brand">ad-screen</div>
     <nav>
       <a th:href="@{/admin}">Dashboard</a>
-      <a th:href="@{/admin/organizations}">Organizações</a>
+      <a th:href="@{/admin/organizations}" th:if="${superAdmin}">Organizações</a>
       <a th:href="@{/admin/users}" class="active">Usuários</a>
       <a th:href="@{/admin/screens}">Telas</a>
     </nav>
@@ -31,15 +31,34 @@
     <form class="admin-form" method="post" th:action="@{/admin/users}">
       <div class="form-group">
         <label for="name">Nome</label>
-        <input type="text" id="name" name="name" required/>
+        <input type="text" id="name" name="name" autocomplete="off" required/>
       </div>
       <div class="form-group">
         <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" required/>
+        <input type="email" id="email" name="email" autocomplete="off" required/>
       </div>
       <div class="form-group">
         <label for="password">Senha</label>
-        <input type="password" id="password" name="password" required/>
+        <input type="password" id="password" name="password" autocomplete="new-password" required/>
+      </div>
+      <div class="form-group">
+        <label for="organizationId">Organização</label>
+        <select id="organizationId" name="organizationId" required>
+          <option value="">Selecione...</option>
+          <option th:each="org : ${organizations}"
+                  th:value="${org.id}"
+                  th:text="${org.name}">
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="role">Papel na organização</label>
+        <select id="role" name="role" required>
+          <option th:each="r : ${roles}"
+                  th:value="${r}"
+                  th:text="${r}">
+          </option>
+        </select>
       </div>
       <div class="actions">
         <button type="submit" class="btn btn-primary">Salvar</button>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Organizações — ad-screen admin</title>
+  <title>Organizações — ad-screen</title>
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,7 +12,7 @@
     <div class="brand">ad-screen</div>
     <nav>
       <a th:href="@{/admin}">Dashboard</a>
-      <a th:href="@{/admin/organizations}" class="active">Organizações</a>
+      <a th:href="@{/admin/organizations}" th:if="${superAdmin}" class="active">Organizações</a>
       <a th:href="@{/admin/users}">Usuários</a>
       <a th:href="@{/admin/screens}">Telas</a>
     </nav>
@@ -21,6 +21,22 @@
     </div>
   </aside>
   <main class="admin-main">
+
+    <div th:if="${!superAdmin and userOrgs != null and #lists.size(userOrgs) > 1}"
+         style="margin-bottom: 24px;">
+      <form method="get" th:action="@{/admin/org/switch}">
+        <label style="font-size:13px; color:#6b7280; margin-right:8px;">Organização:</label>
+        <select name="orgId" onchange="this.form.submit()"
+                style="padding:6px 10px; border-radius:8px; border:1px solid #e5e7eb; font-size:14px;">
+          <option th:each="org : ${userOrgs}"
+                  th:value="${org.id}"
+                  th:text="${org.name}"
+                  th:selected="${currentOrg != null and org.id == currentOrg.id}">
+          </option>
+        </select>
+      </form>
+    </div>
+
     <div class="admin-header">
       <h1>Organizações</h1>
       <p>Gerencie as organizações do sistema.</p>
@@ -32,7 +48,8 @@
     <div class="table-wrapper">
       <div class="table-toolbar">
         <h2>Lista de organizações</h2>
-        <a th:href="@{/admin/organizations/new}" class="btn btn-primary btn-sm">Nova organização</a>
+        <a th:if="${superAdmin}" th:href="@{/admin/organizations/new}"
+           class="btn btn-primary btn-sm">Nova organização</a>
       </div>
       <table>
         <thead>

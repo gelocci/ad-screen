@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Telas — ad-screen admin</title>
+  <title>Telas — ad-screen</title>
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,7 +12,7 @@
     <div class="brand">ad-screen</div>
     <nav>
       <a th:href="@{/admin}">Dashboard</a>
-      <a th:href="@{/admin/organizations}">Organizações</a>
+      <a th:href="@{/admin/organizations}" th:if="${superAdmin}">Organizações</a>
       <a th:href="@{/admin/users}">Usuários</a>
       <a th:href="@{/admin/screens}" class="active">Telas</a>
     </nav>
@@ -21,9 +21,26 @@
     </div>
   </aside>
   <main class="admin-main">
+
+    <div th:if="${!superAdmin and userOrgs != null and #lists.size(userOrgs) > 1}"
+         style="margin-bottom: 24px;">
+      <form method="get" th:action="@{/admin/org/switch}">
+        <label style="font-size:13px; color:#6b7280; margin-right:8px;">Organização:</label>
+        <select name="orgId" onchange="this.form.submit()"
+                style="padding:6px 10px; border-radius:8px; border:1px solid #e5e7eb; font-size:14px;">
+          <option th:each="org : ${userOrgs}"
+                  th:value="${org.id}"
+                  th:text="${org.name}"
+                  th:selected="${currentOrg != null and org.id == currentOrg.id}">
+          </option>
+        </select>
+      </form>
+    </div>
+
     <div class="admin-header">
       <h1>Telas</h1>
-      <p>Visualize todas as telas registradas no sistema.</p>
+      <p th:text="${superAdmin} ? 'Todas as telas do sistema.' : 'Telas de ' + ${currentOrg?.name}">
+      </p>
     </div>
 
     <div class="table-wrapper">
@@ -34,7 +51,7 @@
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Organização</th>
+            <th th:if="${superAdmin}">Organização</th>
             <th>Status</th>
             <th>Criado em</th>
           </tr>
@@ -42,7 +59,9 @@
         <tbody>
           <tr th:each="screen : ${screens}">
             <td th:text="${screen.name}"></td>
-            <td th:text="${screen.organization != null} ? ${screen.organization.name} : '—'"></td>
+            <td th:if="${superAdmin}"
+                th:text="${screen.organization != null} ? ${screen.organization.name} : '—'">
+            </td>
             <td>
               <span class="badge"
                     th:classappend="'badge-' + ${screen.status.name().toLowerCase()}"

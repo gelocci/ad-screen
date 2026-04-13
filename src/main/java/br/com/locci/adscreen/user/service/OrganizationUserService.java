@@ -45,6 +45,10 @@ public class OrganizationUserService {
         return repository.findByIdOrganizationId(organizationId);
     }
 
+    public List<OrganizationUser> findByOrganizationIdFetchUser(final UUID organizationId) {
+        return repository.findByOrganizationIdFetchUser(organizationId);
+    }
+
     public List<OrganizationUser> findByUserId(final UUID userId) {
         return repository.findByIdUserId(userId);
     }
