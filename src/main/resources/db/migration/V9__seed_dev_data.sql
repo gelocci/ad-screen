@@ -8,12 +8,13 @@ VALUES (
     NOW()
 );
 
-INSERT INTO app_user (id, name, email, password_hash, active, created_at, updated_at)
+INSERT INTO app_user (id, name, email, password_hash, global_role, active, created_at, updated_at)
 VALUES (
     '00000000-0000-0000-0000-000000000010',
     'Admin',
     'admin@locci.com.br',
     '$2a$10$3UH/RD9kvaGDmS4yiwV8I.Vf054y.dxsuc.6zxO/0tgHQuU.WvgVW',
+    'SUPERADMIN',
     TRUE,
     NOW(),
     NOW()

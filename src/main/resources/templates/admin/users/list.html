@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Usuários — ad-screen admin</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="brand">ad-screen</div>
+    <nav>
+      <a th:href="@{/admin}">Dashboard</a>
+      <a th:href="@{/admin/organizations}">Organizações</a>
+      <a th:href="@{/admin/users}" class="active">Usuários</a>
+      <a th:href="@{/admin/screens}">Telas</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()">Sair</a>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-header">
+      <h1>Usuários</h1>
+      <p>Gerencie os usuários do sistema.</p>
+    </div>
+
+    <div th:if="${success}" class="alert alert-success mb-2" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-danger mb-2" th:text="${error}"></div>
+
+    <div class="table-wrapper">
+      <div class="table-toolbar">
+        <h2>Lista de usuários</h2>
+        <a th:href="@{/admin/users/new}" class="btn btn-primary btn-sm">Novo usuário</a>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Status</th>
+            <th>Criado em</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.email}"></td>
+            <td>
+              <span class="badge"
+                    th:classappend="${user.active} ? 'badge-active' : 'badge-inactive'"
+                    th:text="${user.active} ? 'Ativo' : 'Inativo'">
+              </span>
+            </td>
+            <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(users)}">
+            <td colspan="4" class="text-center text-muted">Nenhum usuário cadastrado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script>
+  async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>

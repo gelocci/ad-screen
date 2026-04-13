@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${pageTitle} + ' — ad-screen admin'">ad-screen admin</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="brand">ad-screen</div>
+    <nav>
+      <a th:href="@{/admin}"
+         th:classappend="${#httpServletRequest.requestURI == '/admin'} ? 'active'">
+        Dashboard
+      </a>
+      <a th:href="@{/admin/organizations}"
+         th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/organizations')} ? 'active'">
+        Organizações
+      </a>
+      <a th:href="@{/admin/users}"
+         th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/users')} ? 'active'">
+        Usuários
+      </a>
+      <a th:href="@{/admin/screens}"
+         th:classappend="${#httpServletRequest.requestURI.startsWith('/admin/screens')} ? 'active'">
+        Telas
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()">Sair</a>
+    </div>
+  </aside>
+  <main class="admin-main" th:replace="${content}">
+  </main>
+</div>
+<script>
+  async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>

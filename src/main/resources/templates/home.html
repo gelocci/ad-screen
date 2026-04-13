@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Entrar — ad-screen</title>
+  <title>ad-screen</title>
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
 <div class="activate-layout">
-  <div class="card card-login">
+  <div class="card" style="max-width: 420px;">
+
     <div class="text-center mb-2">
       <span class="brand-label">ad-screen</span>
-      <h1 class="mt-2">Entrar</h1>
-      <p class="text-muted">Faça login para continuar.</p>
+      <h1 class="mt-2">Bem-vindo</h1>
+      <p class="text-muted">Entre com sua conta para continuar.</p>
     </div>
 
     <hr class="divider"/>
 
+    <div th:if="${success}" class="alert alert-success mb-2" th:text="${success}"></div>
     <div id="error-msg" class="alert alert-danger mb-2" style="display:none;">
       Usuário ou senha inválidos.
     </div>
@@ -34,11 +36,23 @@
     <div class="actions">
       <button id="btn-login" type="button" class="btn btn-primary w-full">Entrar</button>
     </div>
+
+    <hr class="divider"/>
+
+    <a th:href="@{/activate}" class="btn btn-secondary w-full">Ativar dispositivo</a>
+
+    <div class="text-center mt-2">
+      <a th:href="@{/register}" style="font-size: 14px; color: #6b7280;">
+        Ainda não tem conta? Criar agora
+      </a>
+    </div>
+
   </div>
 </div>
 
-<script th:inline="javascript">
-  const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('redirect');
 
   document.getElementById('btn-login').addEventListener('click', async () => {
     const email    = document.getElementById('email').value;
@@ -55,7 +69,14 @@
       });
 
       if (response.ok) {
-        window.location.href = redirect;
+        const data = await response.json();
+        if (redirect) {
+          window.location.href = redirect;
+        } else if (data.globalRole === 'SUPERADMIN') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/app';
+        }
       } else {
         errorMsg.style.display = 'block';
       }

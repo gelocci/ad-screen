@@ -22,6 +22,10 @@ public class AppUser extends BaseAuditableEntity {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "global_role", nullable = false, length = 20)
+    private GlobalRole globalRole;
+
     @Column(name = "active", nullable = false)
     private Boolean active;
 
@@ -44,27 +48,15 @@ public class AppUser extends BaseAuditableEntity {
         user.name = name;
         user.email = email;
         user.passwordHash = passwordHash;
+        user.globalRole = GlobalRole.USER;
         user.active = Boolean.TRUE;
         return user;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
+    public UUID getId() { return id; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getPasswordHash() { return passwordHash; }
+    public GlobalRole getGlobalRole() { return globalRole; }
+    public Boolean getActive() { return active; }
 }

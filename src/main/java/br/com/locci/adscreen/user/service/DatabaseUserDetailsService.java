@@ -25,11 +25,13 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(user.getEmail())
                 .password(user.getPasswordHash())
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_OPERATOR")))
+                .authorities(List.of(
+                        new SimpleGrantedAuthority("ROLE_" + user.getGlobalRole().name())
+                ))
                 .accountExpired(false)
                 .accountLocked(false)
                 .credentialsExpired(false)
-                .disabled(false)
+                .disabled(!user.getActive())
                 .build();
     }
 }

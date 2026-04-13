@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — ad-screen admin</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="brand">ad-screen</div>
+    <nav>
+      <a th:href="@{/admin}" class="active">Dashboard</a>
+      <a th:href="@{/admin/organizations}">Organizações</a>
+      <a th:href="@{/admin/users}">Usuários</a>
+      <a th:href="@{/admin/screens}">Telas</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()">Sair</a>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-header">
+      <h1>Dashboard</h1>
+      <p>Visão geral do sistema.</p>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="label">Organizações</div>
+        <div class="value" th:text="${totalOrganizations}">0</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Usuários</div>
+        <div class="value" th:text="${totalUsers}">0</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Telas ativas</div>
+        <div class="value" th:text="${activeScreens}">0</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Telas pendentes</div>
+        <div class="value" th:text="${pendingScreens}">0</div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>

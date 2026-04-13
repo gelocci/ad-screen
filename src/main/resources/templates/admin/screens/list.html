@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Telas — ad-screen admin</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="brand">ad-screen</div>
+    <nav>
+      <a th:href="@{/admin}">Dashboard</a>
+      <a th:href="@{/admin/organizations}">Organizações</a>
+      <a th:href="@{/admin/users}">Usuários</a>
+      <a th:href="@{/admin/screens}" class="active">Telas</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="#" onclick="logout()">Sair</a>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-header">
+      <h1>Telas</h1>
+      <p>Visualize todas as telas registradas no sistema.</p>
+    </div>
+
+    <div class="table-wrapper">
+      <div class="table-toolbar">
+        <h2>Lista de telas</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Organização</th>
+            <th>Status</th>
+            <th>Criado em</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="screen : ${screens}">
+            <td th:text="${screen.name}"></td>
+            <td th:text="${screen.organization != null} ? ${screen.organization.name} : '—'"></td>
+            <td>
+              <span class="badge"
+                    th:classappend="'badge-' + ${screen.status.name().toLowerCase()}"
+                    th:text="${screen.status}">
+              </span>
+            </td>
+            <td th:text="${#temporals.format(screen.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(screens)}">
+            <td colspan="4" class="text-center text-muted">Nenhuma tela registrada.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+<script>
+  async function logout() {
+    await fetch('/auth/logout', { method: 'POST' });
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>
