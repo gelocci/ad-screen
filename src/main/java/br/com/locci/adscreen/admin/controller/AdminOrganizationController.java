@@ -62,11 +62,19 @@ public class AdminOrganizationController {
     @PostMapping
     public String create(
             @RequestParam String name,
-            @RequestParam String slug,
             Authentication authentication,
             RedirectAttributes redirectAttributes
     ) {
         try {
+            if (name == null || name.isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Nome é obrigatório.");
+                return "redirect:/admin/organizations/new";
+            }
+
+            String slug = name.toLowerCase()
+                    .replaceAll("[^a-z0-9]+", "-")
+                    .replaceAll("^-|-$", "");
+
             organizationService.create(Organization.create(name, slug));
             redirectAttributes.addFlashAttribute("success", "Organização criada com sucesso.");
         } catch (IllegalArgumentException e) {

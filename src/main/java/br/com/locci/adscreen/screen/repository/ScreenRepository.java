@@ -12,4 +12,12 @@ public interface ScreenRepository extends JpaRepository<Screen, UUID> {
     List<Screen> findByOrganization_Id(UUID organizationId);
 
     List<Screen> findByOrganization_IdAndStatus(UUID organizationId, ScreenStatus status);
+
+    long countBy();
+
+    long countByStatus(ScreenStatus status);
+
+    long countByOrganization_Id(UUID organizationId);
+
+    long countByOrganization_IdAndStatus(UUID organizationId, ScreenStatus status);
 }

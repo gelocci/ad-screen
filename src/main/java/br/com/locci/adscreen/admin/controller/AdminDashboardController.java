@@ -2,10 +2,10 @@ package br.com.locci.adscreen.admin.controller;
 
 import br.com.locci.adscreen.admin.service.AdminContextService;
 import br.com.locci.adscreen.organization.entity.Organization;
-import br.com.locci.adscreen.organization.service.OrganizationService;
+import br.com.locci.adscreen.organization.repository.OrganizationRepository;
 import br.com.locci.adscreen.screen.entity.ScreenStatus;
-import br.com.locci.adscreen.screen.service.ScreenService;
-import br.com.locci.adscreen.user.service.AppUserService;
+import br.com.locci.adscreen.screen.repository.ScreenRepository;
+import br.com.locci.adscreen.user.repository.AppUserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -20,20 +20,20 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminDashboardController {
 
-    private final OrganizationService organizationService;
-    private final AppUserService appUserService;
-    private final ScreenService screenService;
+    private final OrganizationRepository organizationRepository;
+    private final AppUserRepository appUserRepository;
+    private final ScreenRepository screenRepository;
     private final AdminContextService adminContextService;
 
     public AdminDashboardController(
-            OrganizationService organizationService,
-            AppUserService appUserService,
-            ScreenService screenService,
+            OrganizationRepository organizationRepository,
+            AppUserRepository appUserRepository,
+            ScreenRepository screenRepository,
             AdminContextService adminContextService
     ) {
-        this.organizationService = organizationService;
-        this.appUserService = appUserService;
-        this.screenService = screenService;
+        this.organizationRepository = organizationRepository;
+        this.appUserRepository = appUserRepository;
+        this.screenRepository = screenRepository;
         this.adminContextService = adminContextService;
     }
 
@@ -48,13 +48,11 @@ public class AdminDashboardController {
         model.addAttribute("superAdmin", superAdmin);
 
         if (superAdmin) {
-            model.addAttribute("totalOrganizations", organizationService.findAll().size());
-            model.addAttribute("totalUsers", appUserService.findAll().size());
-            model.addAttribute("totalScreens", screenService.findAll().size());
-            model.addAttribute("pendingScreens", screenService.findAll().stream()
-                    .filter(s -> s.getStatus() == ScreenStatus.PENDING).count());
-            model.addAttribute("activeScreens", screenService.findAll().stream()
-                    .filter(s -> s.getStatus() == ScreenStatus.ACTIVE).count());
+            model.addAttribute("totalOrganizations", organizationRepository.countBy());
+            model.addAttribute("totalUsers", appUserRepository.countBy());
+            model.addAttribute("totalScreens", screenRepository.countBy());
+            model.addAttribute("activeScreens", screenRepository.countByStatus(ScreenStatus.ACTIVE));
+            model.addAttribute("pendingScreens", screenRepository.countByStatus(ScreenStatus.PENDING));
         } else {
             Organization currentOrg = adminContextService.resolveCurrentOrg(
                     authentication, request, response);
@@ -63,13 +61,13 @@ public class AdminDashboardController {
             model.addAttribute("currentOrg", currentOrg);
             model.addAttribute("userOrgs", userOrgs);
             model.addAttribute("totalScreens",
-                    screenService.findByOrganizationId(currentOrg.getId()).size());
-            model.addAttribute("pendingScreens",
-                    screenService.findByOrganizationIdAndStatus(
-                            currentOrg.getId(), ScreenStatus.PENDING).size());
+                    screenRepository.countByOrganization_Id(currentOrg.getId()));
             model.addAttribute("activeScreens",
-                    screenService.findByOrganizationIdAndStatus(
-                            currentOrg.getId(), ScreenStatus.ACTIVE).size());
+                    screenRepository.countByOrganization_IdAndStatus(
+                            currentOrg.getId(), ScreenStatus.ACTIVE));
+            model.addAttribute("pendingScreens",
+                    screenRepository.countByOrganization_IdAndStatus(
+                            currentOrg.getId(), ScreenStatus.PENDING));
         }
 
         return "admin/dashboard";

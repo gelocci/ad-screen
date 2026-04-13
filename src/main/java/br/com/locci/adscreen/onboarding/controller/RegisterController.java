@@ -4,18 +4,18 @@ import br.com.locci.adscreen.onboarding.dto.RegisterRequest;
 import br.com.locci.adscreen.organization.entity.Organization;
 import br.com.locci.adscreen.organization.service.OrganizationService;
 import br.com.locci.adscreen.user.entity.AppUser;
-import br.com.locci.adscreen.user.entity.OrganizationUser;
 import br.com.locci.adscreen.user.entity.OrganizationUserRole;
 import br.com.locci.adscreen.user.service.AppUserService;
 import br.com.locci.adscreen.user.service.OrganizationUserService;
+import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/register")
@@ -39,16 +39,24 @@ public class RegisterController {
     }
 
     @GetMapping
-    public String form() {
+    public String form(Model model) {
+        model.addAttribute("request", new RegisterRequest("", "", "", ""));
         return "onboarding/register";
     }
 
     @PostMapping
     public String register(
-            @ModelAttribute RegisterRequest request,
-            Model model,
-            RedirectAttributes redirectAttributes
+            @Valid @ModelAttribute RegisterRequest request,
+            BindingResult bindingResult,
+            Model model
     ) {
+        if (bindingResult.hasErrors()) {
+            String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            model.addAttribute("error", error);
+            model.addAttribute("request", request);
+            return "onboarding/register";
+        }
+
         try {
             String slug = request.organizationName()
                     .toLowerCase()
@@ -70,9 +78,8 @@ public class RegisterController {
                     OrganizationUserRole.OWNER
             );
 
-            redirectAttributes.addFlashAttribute("success",
-                    "Conta criada com sucesso. Faça login para continuar.");
-            return "redirect:/";
+            model.addAttribute("success", "Conta criada com sucesso. Faça login para continuar.");
+            return "redirect:/?success=true";
 
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());

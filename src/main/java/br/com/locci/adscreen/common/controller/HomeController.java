@@ -12,7 +12,7 @@ public class HomeController {
         if (authentication != null && authentication.isAuthenticated()) {
             boolean isSuperAdmin = authentication.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ROLE_SUPERADMIN"));
-            return isSuperAdmin ? "redirect:/admin" : "redirect:/app";
+            return "redirect:/admin";
         }
         return "home";
     }

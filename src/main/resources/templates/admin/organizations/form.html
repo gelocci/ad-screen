@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nova organização — ad-screen admin</title>
+  <title>Nova organização — ad-screen</title>
   <link rel="stylesheet" th:href="@{/css/app.css}"/>
 </head>
 <body>
@@ -12,7 +12,7 @@
     <div class="brand">ad-screen</div>
     <nav>
       <a th:href="@{/admin}">Dashboard</a>
-      <a th:href="@{/admin/organizations}" class="active">Organizações</a>
+      <a th:href="@{/admin/organizations}" th:if="${superAdmin}" class="active">Organizações</a>
       <a th:href="@{/admin/users}">Usuários</a>
       <a th:href="@{/admin/screens}">Telas</a>
     </nav>
@@ -31,11 +31,7 @@
     <form class="admin-form" method="post" th:action="@{/admin/organizations}">
       <div class="form-group">
         <label for="name">Nome</label>
-        <input type="text" id="name" name="name" required/>
-      </div>
-      <div class="form-group">
-        <label for="slug">Slug</label>
-        <input type="text" id="slug" name="slug" required/>
+        <input type="text" id="name" name="name" autocomplete="off" required/>
       </div>
       <div class="actions">
         <button type="submit" class="btn btn-primary">Salvar</button>

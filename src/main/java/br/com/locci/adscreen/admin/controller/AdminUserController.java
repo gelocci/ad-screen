@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin/users")
@@ -99,18 +100,28 @@ public class AdminUserController {
             @RequestParam String password,
             @RequestParam String organizationId,
             @RequestParam OrganizationUserRole role,
-            Authentication authentication,
-            HttpServletRequest request,
-            HttpServletResponse response,
             RedirectAttributes redirectAttributes
     ) {
+        if (name == null || name.isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "Nome é obrigatório.");
+            return "redirect:/admin/users/new";
+        }
+        if (email == null || email.isBlank() || !email.contains("@")) {
+            redirectAttributes.addFlashAttribute("error", "E-mail inválido.");
+            return "redirect:/admin/users/new";
+        }
+        if (password == null || password.length() < 6) {
+            redirectAttributes.addFlashAttribute("error", "Senha deve ter no mínimo 6 caracteres.");
+            return "redirect:/admin/users/new";
+        }
+
         try {
             AppUser user = appUserService.create(
                     AppUser.create(name, email, passwordEncoder.encode(password))
             );
 
             organizationUserService.linkUserToOrganization(
-                    java.util.UUID.fromString(organizationId),
+                    UUID.fromString(organizationId),
                     user.getId(),
                     role
             );
