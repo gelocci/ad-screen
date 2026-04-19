@@ -1,91 +1,791 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-H3WXX5RDYY"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdScreen — Domine Cada Tela</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700&family=Share+Tech+Mono&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{
+  font-family:'Barlow Condensed',sans-serif;
+  background:#04050a;color:#f5f0e8;
+  overflow-x:hidden;
+}
 
-	  gtag('config', 'G-H3WXX5RDYY');
-	</script>
-    <meta charset="UTF-8">
-    <title>Gelocci - Página Inicial</title>
-    <link rel="stylesheet" href="./assets/css/globals.css">
-    <link rel="stylesheet" href="./assets/css/header.css">
-    <link rel="stylesheet" href="./assets/css/main.css">
-    <link rel="stylesheet" href="./assets/css/footer.css">
-    <link rel="stylesheet" href="./assets/css/tools.css">
-    <link rel="stylesheet" href="./assets/css/responsive.css">
-    <link rel="icon" href="./assets/imagens/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="description" content="Ferramentas financeiras para calcular juros compostos e opções de derivativos.">
-    <meta name="keywords" content="finanças, juros compostos, derivativos, calculadoras financeiras">
-    <meta name="author" content="Gerson Locci">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Gelocci - Ferramentas Financeiras">
-    <meta property="og:description" content="Domine suas finanças com nossas ferramentas avançadas para cálculos financeiros.">
-    <meta property="og:image" content="./assets/imagens/og-image.jpg">
-    <meta property="og:url" content="https://gelocci.com.br">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Gelocci - Ferramentas Financeiras">
-    <meta name="twitter:description" content="Explore ferramentas que facilitam sua vida financeira.">
-    <meta name="twitter:image" content="./assets/imagens/og-image.jpg">
-    <script src="./assets/js/load-footer.js" defer></script>
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#04050a}
+::-webkit-scrollbar-thumb{background:#ffe000;border-radius:2px}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  transition:background .4s,border-color .4s;
+}
+#nav.scrolled{
+  background:rgba(4,5,10,.92);
+  border-bottom:1px solid #1a1c24;
+  backdrop-filter:blur(14px);
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.7rem;letter-spacing:.05em;color:#f5f0e8;
+  text-decoration:none;
+}
+.nav-logo span{color:#ffe000}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.12em;
+  color:#6b7280;text-decoration:none;transition:color .2s;
+}
+.nav-links a:hover{color:#ffe000}
+.nav-cta{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.1em;
+  background:#ffe000;color:#000;border:none;
+  padding:10px 22px;cursor:pointer;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+  transition:background .15s;
+}
+.nav-cta:hover{background:#fff}
+
+/* ══════════════════════════════════
+   SECTION 1 — HERO PARALLAX
+══════════════════════════════════ */
+#hero{
+  position:relative;
+  height:100vh;min-height:640px;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Layer 0 — grid bg (mais lento) */
+#hero-grid{
+  position:absolute;inset:-20%;
+  background-image:
+    linear-gradient(rgba(255,224,0,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,224,0,.06) 1px,transparent 1px);
+  background-size:60px 60px;
+  will-change:transform;
+}
+
+/* Layer 1 — scanlines fixas */
+#hero-scan{
+  position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 3px,
+    rgba(0,0,0,.18) 3px,rgba(0,0,0,.18) 4px
+  );z-index:2;
+}
+
+/* Layer 2 — glow orbs (velocidade média) */
+#hero-orbs{
+  position:absolute;inset:-15%;
+  will-change:transform;
+}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.25}
+.orb1{width:500px;height:500px;background:#ffe000;top:5%;left:-10%}
+.orb2{width:400px;height:400px;background:#ff2020;top:40%;right:-5%;opacity:.15}
+.orb3{width:300px;height:300px;background:#00f0ff;bottom:10%;left:30%;opacity:.12}
+
+/* Layer 3 — texto de fundo gigante (mais rápido) */
+#hero-bgtext{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  will-change:transform;pointer-events:none;
+  overflow:hidden;
+}
+.bgtext{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(160px,28vw,340px);
+  line-height:.85;text-transform:uppercase;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,224,0,.08);
+  letter-spacing:-.02em;
+  white-space:nowrap;user-select:none;
+}
+
+/* Layer 4 — conteúdo principal */
+#hero-content{
+  position:relative;z-index:5;
+  text-align:center;padding:0 2rem;
+  will-change:transform;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.2em;color:#ffe000;
+  margin-bottom:1.5rem;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#ff2020;animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,13vw,11rem);
+  line-height:.88;letter-spacing:.01em;
+  text-transform:uppercase;
+}
+.hero-title .line1{display:block;color:#f5f0e8}
+.hero-title .line2{display:block;color:#ffe000}
+.hero-title .line3{
+  display:block;color:transparent;
+  -webkit-text-stroke:2px rgba(245,240,232,.35);
+}
+.hero-sub{
+  font-size:1.05rem;font-weight:400;color:#6b7280;
+  max-width:480px;margin:1.6rem auto 2.4rem;line-height:1.6;
+}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-y{
+  font-family:'Share Tech Mono',monospace;font-size:12px;
+  text-transform:uppercase;letter-spacing:.1em;
+  background:#ffe000;color:#000;border:none;
+  padding:16px 36px;cursor:pointer;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  transition:all .15s;text-decoration:none;display:inline-block;
+}
+.btn-y:hover{background:#fff;transform:translate(-2px,-2px);box-shadow:4px 4px 0 #ffe000}
+.btn-g{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  text-transform:uppercase;letter-spacing:.1em;
+  background:transparent;color:#6b7280;
+  border:1px solid #2a2d3a;
+  padding:15px 30px;cursor:pointer;transition:all .2s;
+  text-decoration:none;display:inline-block;
+}
+.btn-g:hover{border-color:#ffe000;color:#ffe000}
+
+/* scroll hint */
+.scroll-hint{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  z-index:5;display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;
+  text-transform:uppercase;color:#3d4155;
+  animation:fadeUpDown 2s ease-in-out infinite;
+}
+@keyframes fadeUpDown{0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}50%{opacity:1;transform:translateX(-50%) translateY(-5px)}}
+.scroll-arrow{width:1px;height:40px;background:linear-gradient(180deg,transparent,#ffe000);margin:0 auto}
+
+/* ══════════════════════════════════
+   TICKER
+══════════════════════════════════ */
+.ticker-wrap{
+  background:#ffe000;padding:10px 0;overflow:hidden;
+  white-space:nowrap;border-top:2px solid #000;border-bottom:2px solid #000;
+  position:relative;z-index:10;
+}
+.ticker-inner{
+  display:inline-block;
+  animation:tickRoll 22s linear infinite;
+  font-family:'Share Tech Mono',monospace;font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;color:#000;
+}
+@keyframes tickRoll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ══════════════════════════════════
+   SECTION 2 — SCREEN MOSAIC PARALLAX
+══════════════════════════════════ */
+#mosaic{
+  position:relative;height:100vh;min-height:600px;
+  overflow:hidden;display:flex;align-items:center;
+  background:#04050a;
+}
+#mosaic-bg{
+  position:absolute;inset:-20%;
+  background-image:
+    linear-gradient(rgba(0,240,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,240,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  will-change:transform;
+}
+#mosaic-content{
+  position:relative;z-index:5;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:center;
+  max-width:1100px;margin:0 auto;padding:0 3rem;
+  width:100%;
+}
+.mosaic-text .eyebrow{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  text-transform:uppercase;letter-spacing:.2em;color:#ffe000;margin-bottom:.8rem;
+}
+.mosaic-text h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,6vw,6rem);
+  line-height:.9;text-transform:uppercase;
+  margin-bottom:1.2rem;
+}
+.mosaic-text h2 em{font-style:normal;color:#ffe000}
+.mosaic-text p{font-size:1rem;color:#6b7280;line-height:1.65;max-width:420px;margin-bottom:2rem}
+
+/* Screen grid */
+.screen-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  grid-template-rows:auto auto;gap:8px;
+  will-change:transform;
+}
+.scr{
+  background:#1a1c24;border:1px solid #2a2d3a;
+  border-radius:5px;overflow:hidden;position:relative;
+  transition:transform .3s,border-color .3s;cursor:default;
+}
+.scr:hover{border-color:rgba(255,224,0,.4);transform:scale(1.02)}
+.scr-bar{
+  background:#0d0f14;padding:6px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.scr-dots{display:flex;gap:4px}
+.scr-dot{width:7px;height:7px;border-radius:50%}
+.scr-screen{
+  height:110px;position:relative;overflow:hidden;
+  display:flex;align-items:flex-end;padding:10px;
+}
+.scr-screen::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 3px);
+}
+.scr-body{position:relative;z-index:1}
+.scr-tag{font-family:'Share Tech Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.scr-hl{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;line-height:1;color:#fff}
+.scr-indicator{position:absolute;top:7px;right:7px;width:6px;height:6px;border-radius:50%;animation:blink 1.2s step-end infinite}
+.scr-foot{background:#0d0f14;padding:5px 10px;display:flex;justify-content:space-between;align-items:center}
+.scr-name{font-family:'Share Tech Mono',monospace;font-size:8px;color:#3d4155}
+.scr-status{font-family:'Share Tech Mono',monospace;font-size:8px}
+.scr-wide{grid-column:span 2}
+.scr-wide .scr-screen{height:80px}
+
+/* ══════════════════════════════════
+   SECTION 3 — STATS STRIP (sticky feel)
+══════════════════════════════════ */
+.stats-section{
+  position:relative;z-index:10;
+  background:#ffe000;
+  padding:2rem 3rem;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:3px solid #000;border-bottom:3px solid #000;
+}
+.stat-col{text-align:center;padding:0 1rem;border-right:2px solid rgba(0,0,0,.15)}
+.stat-col:last-child{border-right:none}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:#000;line-height:1}
+.stat-u{font-size:1.1rem;vertical-align:super;font-family:'Barlow Condensed',sans-serif;font-weight:900}
+.stat-l{font-family:'Share Tech Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(0,0,0,.55);margin-top:4px}
+
+/* ══════════════════════════════════
+   SECTION 4 — FEATURES PARALLAX
+══════════════════════════════════ */
+#features{
+  position:relative;
+  min-height:100vh;
+  overflow:hidden;
+  padding:7rem 3rem;
+  background:#0d0f14;
+}
+#feat-bg{
+  position:absolute;inset:-20%;
+  will-change:transform;pointer-events:none;
+}
+.feat-orb{position:absolute;border-radius:50%;filter:blur(100px)}
+.feat-orb1{width:600px;height:600px;background:rgba(255,224,0,.05);top:-100px;right:-150px}
+.feat-orb2{width:400px;height:400px;background:rgba(255,32,32,.04);bottom:0;left:-100px}
+
+#feat-content{position:relative;z-index:5;max-width:1000px;margin:0 auto}
+.feat-header{margin-bottom:4rem}
+.feat-header .eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:#ffe000;margin-bottom:.8rem}
+.feat-header h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,6rem);text-transform:uppercase;line-height:.9}
+.feat-header h2 span{color:transparent;-webkit-text-stroke:1px rgba(245,240,232,.25)}
+
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#2a2d3a;border:1px solid #2a2d3a}
+.feat-item{
+  background:#0d0f14;padding:2.2rem 1.8rem;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.feat-item::after{
+  content:'';position:absolute;bottom:0;left:0;
+  width:0;height:2px;background:#ffe000;
+  transition:width .35s;
+}
+.feat-item:hover{background:#13161e}
+.feat-item:hover::after{width:100%}
+.fi-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:#2a2d3a;margin-bottom:1.4rem;transition:color .25s}
+.feat-item:hover .fi-num{color:#ffe000}
+.fi-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;text-transform:uppercase;line-height:1;margin-bottom:.7rem}
+.fi-desc{font-size:.9rem;color:#6b7280;line-height:1.6}
+
+/* ══════════════════════════════════
+   SECTION 5 — HOW IT WORKS (DIAGONAL)
+══════════════════════════════════ */
+#how{
+  position:relative;overflow:hidden;
+  padding:7rem 3rem;
+  background:#04050a;
+}
+#how::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:80px;background:linear-gradient(to bottom right,#0d0f14 49%,#04050a 50%);
+}
+#how::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:80px;background:linear-gradient(to top left,#0d0f14 49%,#04050a 50%);
+}
+#how-bg{
+  position:absolute;inset:-20%;
+  background-image:
+    linear-gradient(rgba(255,224,0,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,224,0,.03) 1px,transparent 1px);
+  background-size:50px 50px;
+  will-change:transform;
+}
+#how-content{position:relative;z-index:5;max-width:1000px;margin:0 auto}
+.how-header{margin-bottom:4rem;text-align:center}
+.how-header .eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.2em;color:#ffe000;margin-bottom:.8rem}
+.how-header h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,5.5rem);text-transform:uppercase;line-height:.9}
+
+.how-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;position:relative;
+}
+.how-steps::after{
+  content:'';position:absolute;
+  top:30px;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,224,0,.3),transparent);
+}
+.how-step{padding:0 1.5rem;text-align:center;position:relative;z-index:1}
+.hs-num{
+  font-family:'Bebas Neue',sans-serif;font-size:4.5rem;
+  color:#ffe000;line-height:1;margin-bottom:1rem;opacity:.85;
+}
+.hs-title{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem;
+}
+.hs-desc{font-size:.85rem;color:#6b7280;line-height:1.6}
+
+/* ══════════════════════════════════
+   SECTION 6 — CTA PARALLAX FINAL
+══════════════════════════════════ */
+#cta{
+  position:relative;height:100vh;min-height:580px;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+#cta-bg{
+  position:absolute;inset:-20%;
+  background:radial-gradient(ellipse at 50% 60%,rgba(255,224,0,.12) 0%,transparent 55%),
+    #04050a;
+  will-change:transform;
+}
+#cta-bgtext{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;pointer-events:none;
+  will-change:transform;
+}
+.cta-bgword{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(180px,30vw,380px);
+  color:transparent;
+  -webkit-text-stroke:1px rgba(255,224,0,.06);
+  text-transform:uppercase;user-select:none;
+  white-space:nowrap;
+}
+#cta-content{
+  position:relative;z-index:5;text-align:center;padding:0 2rem;
+  will-change:transform;
+}
+.cta-tag{
+  display:inline-block;
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:#ffe000;border:1px solid rgba(255,224,0,.3);
+  padding:5px 14px;border-radius:2px;margin-bottom:1.5rem;
+}
+#cta-content h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,10vw,9rem);
+  line-height:.88;text-transform:uppercase;
+  margin-bottom:1.4rem;
+}
+#cta-content h2 span{color:#ffe000}
+#cta-content p{font-size:1rem;color:#6b7280;margin-bottom:2.5rem;line-height:1.6}
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+footer{
+  background:#0d0f14;border-top:2px solid #ffe000;
+  padding:2rem 3rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;
+  position:relative;z-index:10;
+}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.05em}
+.foot-logo span{color:#ffe000}
+.foot-links{display:flex;gap:1.8rem}
+.foot-links a{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  text-transform:uppercase;letter-spacing:.1em;
+  color:#3d4155;text-decoration:none;transition:color .15s;
+}
+.foot-links a:hover{color:#ffe000}
+.foot-copy{font-family:'Share Tech Mono',monospace;font-size:10px;color:#3d4155}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.15s}
+.reveal-delay-2{transition-delay:.3s}
+.reveal-delay-3{transition-delay:.45s}
+.reveal-delay-4{transition-delay:.6s}
+
+/* ══════════════════════════════════
+   MOBILE RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* NAV */
+  #nav { padding: .9rem 1.4rem; }
+  .nav-links { display: none; }
+
+  /* HERO */
+  #hero { height: auto; min-height: 100svh; padding-top: 5rem; }
+  #hero-bgtext .bgtext { font-size: 22vw; opacity: .05; }
+  .hero-title { font-size: clamp(4rem, 18vw, 7rem); }
+  .hero-sub { font-size: .95rem; margin: 1.2rem auto 2rem; }
+  .hero-actions { flex-direction: column; align-items: center; gap: 10px; }
+  .btn-y, .btn-g { width: 100%; max-width: 320px; text-align: center; padding: 15px 20px; }
+
+  /* TICKER */
+  .ticker-inner { font-size: 10px; }
+
+  /* MOSAIC */
+  #mosaic { height: auto; min-height: auto; padding: 4rem 0; }
+  #mosaic-content {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 0 1.4rem;
+  }
+  .mosaic-text h2 { font-size: clamp(2.8rem, 12vw, 5rem); }
+  .mosaic-text p { max-width: 100%; }
+  .screen-grid { grid-template-columns: 1fr 1fr; }
+  .scr-wide { grid-column: span 2; }
+
+  /* STATS */
+  .stats-section {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 1.5rem 1rem;
+  }
+  .stat-col { padding: .8rem .5rem; border-right: none; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .stat-col:nth-child(1), .stat-col:nth-child(2) { border-bottom: 2px solid rgba(0,0,0,.15); }
+  .stat-col:nth-child(odd) { border-right: 2px solid rgba(0,0,0,.15); }
+  .stat-n { font-size: 2.6rem; }
+
+  /* FEATURES */
+  #features { padding: 4rem 1.4rem; }
+  .feat-header { margin-bottom: 2.5rem; }
+  .feat-header h2 { font-size: clamp(2.8rem, 12vw, 5rem); }
+  .feat-grid { grid-template-columns: 1fr; }
+  .feat-item { padding: 1.6rem 1.4rem; }
+
+  /* HOW */
+  #how { padding: 5rem 1.4rem; }
+  #how::before, #how::after { height: 40px; }
+  .how-header h2 { font-size: clamp(2.4rem, 10vw, 4rem); }
+  .how-steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .how-steps::after { display: none; }
+  .how-step { padding: 0; text-align: left; display: flex; gap: 1.2rem; align-items: flex-start; }
+  .hs-num { font-size: 3rem; line-height: 1; flex-shrink: 0; margin-bottom: 0; }
+  .hs-title { font-size: 1.05rem; }
+
+  /* CTA */
+  #cta { height: auto; min-height: 100svh; padding: 5rem 1.4rem; }
+  #cta-bgtext .cta-bgword { font-size: 28vw; }
+  #cta-content h2 { font-size: clamp(4rem, 16vw, 8rem); }
+  #cta-content p { font-size: .95rem; }
+  #cta-content div { flex-direction: column; align-items: center; }
+  #cta-content .btn-y,
+  #cta-content .btn-g { width: 100%; max-width: 320px; text-align: center; }
+
+  /* FOOTER */
+  footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.8rem 1.4rem;
+  }
+  .foot-links { flex-wrap: wrap; gap: 1rem; }
+}
+
+@media (max-width: 400px) {
+  .hero-title { font-size: 15vw; }
+  .screen-grid { grid-template-columns: 1fr; }
+  .scr-wide { grid-column: span 1; }
+  .stats-section { grid-template-columns: 1fr 1fr; }
+}
+
+</style>
 </head>
 <body>
-    <header>
-        <h1>Ferramentas Financeiras</h1>
-        <h2>gelocci.com.br</h2>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="./index.html" aria-current="page" class="inicio">Início</a></li>
-            <li><a href="./quem-somos/index.html">Quem Somos</a></li>
-            <li><a href="./politica-de-privacidade/index.html">Política de Privacidade</a></li>
-            <li><a href="./termos-de-uso/index.html">Termos de Uso</a></li>
-            <li><a href="./contato/index.html">Contato</a></li>
-        </ul>
-    </nav>
-    <main>
-        <h2 class="titulo-principal">Finanças em Foco</h2>
-        <p class="frase-destaque">Recursos e calculadoras para você dominar suas finanças.</p>
 
-        <!-- Cards das ferramentas -->
-        <section class="ferramentas">
-            <!-- Card de Juros Compostos -->
-            <a href="./calculadoras/juros-compostos/index.html" class="ferramenta" aria-label="Ferramenta de Juros Compostos">
-                <i class="fa-solid fa-coins"></i>
-                <h3>Juros Compostos</h3>
-                <p>Calcule o crescimento do seu investimento ao longo do tempo.</p>
-                <button>Acesse Agora</button>
-            </a>
-            <!-- Card de Opções de Derivativos -->
-            <a href="./calculadoras/derivativos/index.html" class="ferramenta" aria-label="Ferramenta de Opções de Derivativos">
-                <i class="fa-solid fa-chart-line"></i>
-                <h3>Opções de Derivativos</h3>
-                <p>Saiba o preço de suas opções com o modelo Black-Scholes.</p>
-                <button>Acesse Agora</button>
-            </a>
-            <!-- Novo Card de Equivalência de Taxas -->
-            <a href="./calculadoras/equivalencia-de-taxas/index.html" class="ferramenta" aria-label="Ferramenta de Equivalência de Taxas">
-                <i class="fa-solid fa-exchange-alt"></i>
-                <h3>Equivalência de Taxas</h3>
-                <p>Converta taxas de juros entre diferentes períodos.</p>
-                <button>Acesse Agora</button>
-            </a>
-			<!-- Card Simulador INSS -->
-			<a href="./calculadoras/simulador-inss/index.html" class="ferramenta" aria-label="Simulador de Aposentadoria do INSS">
-				<i class="fa-solid fa-id-card"></i>
-				<h3>Simulador INSS</h3>
-				<p>Simule quanto você pode receber de aposentadoria com base no CNIS.</p>
-				<button>Acesse Agora</button>
-			</a>
-        </section>
-    </main>
-    <!-- Placeholder para o footer -->
-    <div id="footer-placeholder"></div>
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">AD<span>SCREEN</span></a>
+  <ul class="nav-links">
+    <li><a href="#mosaic">Plataforma</a></li>
+    <li><a href="#features">Funcionalidades</a></li>
+    <li><a href="#how">Como funciona</a></li>
+    <li><a href="#cta">Contato</a></li>
+  </ul>
+  <button class="nav-cta">Começar agora</button>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div id="hero-grid"></div>
+  <div id="hero-scan"></div>
+  <div id="hero-orbs">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div id="hero-bgtext"><div class="bgtext">ADSCREEN</div></div>
+  <div id="hero-content">
+    <div class="hero-eyebrow"><span class="live-dot"></span> Plataforma de digital signage</div>
+    <h1 class="hero-title">
+      <span class="line1">DOMINE</span>
+      <span class="line2">CADA</span>
+      <span class="line3">TELA</span>
+    </h1>
+    <p class="hero-sub">Gerencie, programe e transmita conteúdo publicitário em redes de telas digitais com controle total — em tempo real, de qualquer lugar.</p>
+    <div class="hero-actions">
+      <a class="btn-y" href="#cta">Começar de graça →</a>
+      <a class="btn-g" href="#how">Ver como funciona</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-arrow"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    GESTÃO DE TELAS EM TEMPO REAL &nbsp;·&nbsp; CONTEÚDO DINÂMICO &nbsp;·&nbsp; ANALYTICS AO VIVO &nbsp;·&nbsp; PUSH EM 3 SEGUNDOS &nbsp;·&nbsp; MULTI-TENANT &nbsp;·&nbsp; OFFLINE READY &nbsp;·&nbsp; SUPORTE 24H &nbsp;·&nbsp; API ABERTA &nbsp;·&nbsp; GESTÃO DE TELAS EM TEMPO REAL &nbsp;·&nbsp; CONTEÚDO DINÂMICO &nbsp;·&nbsp; ANALYTICS AO VIVO &nbsp;·&nbsp; PUSH EM 3 SEGUNDOS &nbsp;·&nbsp; MULTI-TENANT &nbsp;·&nbsp; OFFLINE READY &nbsp;·&nbsp; SUPORTE 24H &nbsp;·&nbsp; API ABERTA &nbsp;·&nbsp;
+  </div>
+</div>
+
+<!-- ═══ MOSAIC ═══ -->
+<section id="mosaic">
+  <div id="mosaic-bg"></div>
+  <div id="mosaic-content">
+    <div class="mosaic-text reveal">
+      <div class="eyebrow">Visualização ao vivo</div>
+      <h2>CADA TELA<br>SOB SEU <em>CONTROLE</em></h2>
+      <p>Visualize em tempo real o que está sendo exibido em cada tela da sua rede. Troque conteúdo, pause campanhas ou empurre emergências com um clique.</p>
+      <a class="btn-y" href="#cta" style="font-size:11px;padding:13px 28px">Ver demonstração →</a>
+    </div>
+    <div class="screen-grid reveal reveal-delay-1">
+      <!-- Tela 1 -->
+      <div class="scr">
+        <div class="scr-bar">
+          <div class="scr-dots"><div class="scr-dot" style="background:#ff4444"></div><div class="scr-dot" style="background:#ffb800"></div><div class="scr-dot" style="background:#00e676"></div></div>
+        </div>
+        <div class="scr-screen" style="background:linear-gradient(135deg,#0a0a18,#1a0830)">
+          <div class="scr-indicator" style="background:#ffe000"></div>
+          <div class="scr-body">
+            <div class="scr-tag" style="color:#ffe000">Promoção</div>
+            <div class="scr-hl">Oferta<br>Verão</div>
+          </div>
+        </div>
+        <div class="scr-foot"><span class="scr-name">Loja Norte · Ch.1</span><span class="scr-status" style="color:#ffe000">● LIVE</span></div>
+      </div>
+      <!-- Tela 2 -->
+      <div class="scr">
+        <div class="scr-bar">
+          <div class="scr-dots"><div class="scr-dot" style="background:#ff4444"></div><div class="scr-dot" style="background:#ffb800"></div><div class="scr-dot" style="background:#00e676"></div></div>
+        </div>
+        <div class="scr-screen" style="background:linear-gradient(135deg,#041410,#082820)">
+          <div class="scr-indicator" style="background:#00e676"></div>
+          <div class="scr-body">
+            <div class="scr-tag" style="color:#69f0ae">Lançamento</div>
+            <div class="scr-hl">Novo<br>Produto</div>
+          </div>
+        </div>
+        <div class="scr-foot"><span class="scr-name">Loja Sul · Ch.2</span><span class="scr-status" style="color:#00e676">● ONLINE</span></div>
+      </div>
+      <!-- Tela 3 -->
+      <div class="scr">
+        <div class="scr-bar">
+          <div class="scr-dots"><div class="scr-dot" style="background:#ff4444"></div><div class="scr-dot" style="background:#ffb800"></div><div class="scr-dot" style="background:#00e676"></div></div>
+        </div>
+        <div class="scr-screen" style="background:linear-gradient(135deg,#140808,#280a0a)">
+          <div class="scr-indicator" style="background:#ff4444"></div>
+          <div class="scr-body">
+            <div class="scr-tag" style="color:#ff8080">Urgência</div>
+            <div class="scr-hl">Aviso<br>Especial</div>
+          </div>
+        </div>
+        <div class="scr-foot"><span class="scr-name">Recepção · Ch.3</span><span class="scr-status" style="color:#ff4444">● ALERTA</span></div>
+      </div>
+      <!-- Tela Wide -->
+      <div class="scr scr-wide">
+        <div class="scr-bar">
+          <div class="scr-dots"><div class="scr-dot" style="background:#ff4444"></div><div class="scr-dot" style="background:#ffb800"></div><div class="scr-dot" style="background:#00e676"></div></div>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:8px;color:#3d4155">Painel Central · 1920×1080</span>
+        </div>
+        <div class="scr-screen" style="background:linear-gradient(135deg,#04100e,#081e18);justify-content:space-between;align-items:center;padding:12px 16px">
+          <div class="scr-indicator" style="background:#ffe000"></div>
+          <div class="scr-body">
+            <div class="scr-tag" style="color:#ffe000">Campanha Principal · 16:9</div>
+            <div class="scr-hl" style="font-size:1.6rem">Grand Opening — Temporada 2025</div>
+          </div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:rgba(0,230,118,.25);text-align:right;line-height:1">98%<br><span style="font-size:.8rem;font-family:'Barlow Condensed';font-weight:400">uptime</span></div>
+        </div>
+        <div class="scr-foot"><span class="scr-name">Entrada Principal · Ch.4</span><span class="scr-status" style="color:#ffe000">● AO VIVO</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stat-col reveal"><div class="stat-n"><span class="stat-u">+</span>3.2K</div><div class="stat-l">Telas ativas</div></div>
+  <div class="stat-col reveal reveal-delay-1"><div class="stat-n">98<span class="stat-u">%</span></div><div class="stat-l">Uptime garantido</div></div>
+  <div class="stat-col reveal reveal-delay-2"><div class="stat-n">&lt;3<span class="stat-u">s</span></div><div class="stat-l">Latência de push</div></div>
+  <div class="stat-col reveal reveal-delay-3"><div class="stat-n">24<span class="stat-u">h</span></div><div class="stat-l">Suporte online</div></div>
+</div>
+
+<!-- ═══ FEATURES ═══ -->
+<section id="features">
+  <div id="feat-bg"><div class="feat-orb feat-orb1"></div><div class="feat-orb feat-orb2"></div></div>
+  <div id="feat-content">
+    <div class="feat-header reveal">
+      <div class="eyebrow">Plataforma completa</div>
+      <h2>O QUE A<br>PLATAFORMA <span>FAZ</span></h2>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-item reveal"><div class="fi-num">/ 01</div><div class="fi-name">Gestão Central</div><div class="fi-desc">Controle todas as telas a partir de um único painel, de qualquer dispositivo, de qualquer lugar do mundo.</div></div>
+      <div class="feat-item reveal reveal-delay-1"><div class="fi-num">/ 02</div><div class="fi-name">Push Imediato</div><div class="fi-desc">Troque o conteúdo em menos de 3 segundos. Mudança de plano ou emergência — a tela atualiza em tempo real.</div></div>
+      <div class="feat-item reveal reveal-delay-2"><div class="fi-num">/ 03</div><div class="fi-name">Programação</div><div class="fi-desc">Defina o que cada tela exibe, em que horário, por quanto tempo — automaticamente, sem intervenção manual.</div></div>
+      <div class="feat-item reveal reveal-delay-1"><div class="fi-num">/ 04</div><div class="fi-name">Analytics</div><div class="fi-desc">Impressões, engajamento e performance em dashboards de tempo real com histórico completo de campanhas.</div></div>
+      <div class="feat-item reveal reveal-delay-2"><div class="fi-num">/ 05</div><div class="fi-name">API Aberta</div><div class="fi-desc">Conecte AdScreen ao seu CRM, ERP ou qualquer sistema via REST API documentada. Integrações em horas.</div></div>
+      <div class="feat-item reveal reveal-delay-3"><div class="fi-num">/ 06</div><div class="fi-name">Offline Ready</div><div class="fi-desc">Sem internet? O player mantém a última playlist em cache e continua exibindo normalmente.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section id="how">
+  <div id="how-bg"></div>
+  <div id="how-content">
+    <div class="how-header reveal">
+      <div class="eyebrow">Processo</div>
+      <h2>DO UPLOAD À TELA<br>EM MINUTOS</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step reveal"><div class="hs-num">01</div><div class="hs-title">Conecte as telas</div><div class="hs-desc">Ative cada dispositivo com um código. Compatível com Android TV, Smart TV, PC e Raspberry Pi.</div></div>
+      <div class="how-step reveal reveal-delay-1"><div class="hs-num">02</div><div class="hs-title">Suba o conteúdo</div><div class="hs-desc">Vídeos, imagens, HTML ou slides. Qualquer formato, processado automaticamente na nuvem.</div></div>
+      <div class="how-step reveal reveal-delay-2"><div class="hs-num">03</div><div class="hs-title">Configure a grade</div><div class="hs-desc">Monte a programação por horário, dia da semana ou campanha. Arraste e solte.</div></div>
+      <div class="how-step reveal reveal-delay-3"><div class="hs-num">04</div><div class="hs-title">Acompanhe ao vivo</div><div class="hs-desc">Monitore cada tela em tempo real e ajuste campanhas com um clique. Relatórios automáticos.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FINAL ═══ -->
+<section id="cta">
+  <div id="cta-bg"></div>
+  <div id="cta-bgtext"><div class="cta-bgword">LIGAR</div></div>
+  <div id="cta-content" class="reveal">
+    <span class="cta-tag">Comece agora · gratuito</span>
+    <h2>PRONTO<br>PARA<br><span>LIGAR?</span></h2>
+    <p>14 dias de todas as funcionalidades, de graça. Sem cartão de crédito.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn-y" href="#" style="font-size:13px;padding:18px 44px">Criar conta grátis →</a>
+      <a class="btn-g" href="#" style="font-size:12px;padding:17px 34px">Falar com vendas</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">AD<span>SCREEN</span></div>
+  <div class="foot-links">
+    <a href="#">Privacidade</a><a href="#">Termos</a>
+    <a href="#">Documentação</a><a href="#">Status</a>
+  </div>
+  <div class="foot-copy">© 2025 AdScreen · Todos os direitos reservados</div>
+</footer>
+
+<script>
+// ═══ PARALLAX ENGINE ═══
+const layers = [
+  { el: document.getElementById('hero-grid'),    speed: 0.15,  section: 'hero'   },
+  { el: document.getElementById('hero-orbs'),    speed: 0.25,  section: 'hero'   },
+  { el: document.getElementById('hero-bgtext'),  speed: 0.45,  section: 'hero'   },
+  { el: document.getElementById('hero-content'), speed: -0.1,  section: 'hero'   },
+  { el: document.getElementById('mosaic-bg'),    speed: 0.2,   section: 'mosaic' },
+  { el: document.getElementById('feat-bg'),      speed: 0.18,  section: 'features'},
+  { el: document.getElementById('how-bg'),       speed: 0.15,  section: 'how'    },
+  { el: document.getElementById('cta-bg'),       speed: 0.2,   section: 'cta'    },
+  { el: document.getElementById('cta-bgtext'),   speed: 0.4,   section: 'cta'    },
+  { el: document.getElementById('cta-content'),  speed: -0.08, section: 'cta'    },
+];
+
+function onScroll() {
+  const scrollY = window.scrollY;
+
+  layers.forEach(layer => {
+    if (!layer.el) return;
+    const section = layer.el.closest('section') || layer.el.parentElement;
+    const sectionTop = section.offsetTop;
+    const relY = scrollY - sectionTop;
+    const offset = relY * layer.speed;
+    layer.el.style.transform = `translateY(${offset}px)`;
+  });
+
+  // Parallax no screen-grid do mosaic
+  const screenGrid = document.querySelector('.screen-grid');
+  if (screenGrid) {
+    const mosaic = document.getElementById('mosaic');
+    const relY = scrollY - mosaic.offsetTop;
+    screenGrid.style.transform = `translateY(${relY * -0.08}px)`;
+  }
+
+  // Nav scroll state
+  const nav = document.getElementById('nav');
+  nav.classList.toggle('scrolled', scrollY > 60);
+}
+
+// ═══ INTERSECTION OBSERVER — REVEAL ═══
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => observer.observe(el));
+
+// ═══ RAF LOOP ═══
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => { onScroll(); ticking = false; });
+    ticking = true;
+  }
+}, { passive: true });
+
+onScroll();
+</script>
 </body>
 </html>
