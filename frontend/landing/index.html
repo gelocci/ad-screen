@@ -441,6 +441,146 @@ footer{
 .reveal-delay-2{transition-delay:.3s}
 .reveal-delay-3{transition-delay:.45s}
 .reveal-delay-4{transition-delay:.6s}
+
+/* ══════════════════════════════════
+   MOBILE RESPONSIVE
+══════════════════════════════════ */
+@media (max-width: 768px) {
+
+  html, body { overflow-x: hidden; max-width: 100vw; }
+
+  /* ── NAV ── */
+  #nav {
+    padding: .9rem 1.4rem;
+    justify-content: space-between;
+  }
+  .nav-links { display: none; }
+  .nav-logo { font-size: 1.4rem; }
+
+  /* ── HERO ── */
+  #hero { height: auto; min-height: 100svh; padding-top: 5rem; overflow: hidden; }
+  #hero-bgtext .bgtext { font-size: 20vw; opacity: .04; }
+  .hero-title { font-size: clamp(3.2rem, 15vw, 5.5rem); }
+  .hero-sub { font-size: .95rem; margin: 1.2rem auto 2rem; }
+  .hero-actions { flex-direction: column; align-items: center; gap: 10px; }
+  .btn-y { width: 100%; max-width: 320px; text-align: center; padding: 15px 20px; }
+  .btn-g { width: 100%; max-width: 320px; text-align: center; padding: 14px 20px; }
+
+  /* ── TICKER ── */
+  .ticker-inner { font-size: 10px; }
+
+  /* ── MOSAIC ── */
+  #mosaic { height: auto; padding: 4rem 0; overflow: hidden; }
+  #mosaic-content {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 0 1.4rem;
+    width: 100%;
+    overflow: hidden;
+  }
+  .mosaic-text h2 { font-size: clamp(2.6rem, 11vw, 4.5rem); }
+  .mosaic-text p { max-width: 100%; }
+  /* telas em coluna única no mobile */
+  .screen-grid {
+    grid-template-columns: 1fr 1fr;
+    will-change: unset !important;
+    transform: none !important;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .scr-wide { grid-column: span 2; }
+  .scr-screen { height: 90px; }
+
+  /* ── STATS ── */
+  .stats-section {
+    grid-template-columns: 1fr 1fr;
+    padding: 1.5rem 1rem;
+  }
+  .stat-col {
+    padding: 1rem .5rem;
+    border-right: none;
+    border-bottom: none;
+  }
+  .stat-col:nth-child(1),
+  .stat-col:nth-child(2) { border-bottom: 2px solid rgba(0,0,0,.15); }
+  .stat-col:nth-child(odd) { border-right: 2px solid rgba(0,0,0,.15); }
+  .stat-n { font-size: 2.5rem; }
+  .stat-l { font-size: 9px; }
+
+  /* ── FEATURES ── */
+  #features { padding: 4rem 1.4rem; overflow: hidden; }
+  .feat-header { margin-bottom: 2.5rem; }
+  .feat-header h2 { font-size: clamp(2.6rem, 11vw, 4.5rem); }
+  .feat-grid {
+    grid-template-columns: 1fr;
+    background: none;
+    border: none;
+    gap: 2px;
+  }
+  .feat-item {
+    padding: 1.6rem 1.4rem;
+    border: 1px solid #2a2d3a;
+  }
+  .fi-name { font-size: 1.7rem; }
+
+  /* ── HOW ── */
+  #how { padding: 5rem 1.4rem; overflow: hidden; }
+  #how::before, #how::after { height: 40px; }
+  .how-header h2 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
+  .how-steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .how-steps::after { display: none; }
+  .how-step {
+    padding: 0;
+    text-align: left;
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+  }
+  .hs-num {
+    font-size: 3rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+  .hs-title { font-size: 1rem; }
+  .hs-desc { font-size: .85rem; }
+
+  /* ── CTA ── */
+  #cta { height: auto; min-height: 100svh; padding: 5rem 1.4rem; overflow: hidden; }
+  #cta-bgtext .cta-bgword { font-size: 26vw; }
+  #cta-content h2 { font-size: clamp(3.5rem, 15vw, 7rem); }
+  #cta-content p { font-size: .95rem; }
+  #cta-content > div {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+  #cta-content .btn-y,
+  #cta-content .btn-g {
+    width: 100% !important;
+    max-width: 320px !important;
+    text-align: center !important;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.8rem 1.4rem;
+  }
+  .foot-links { flex-wrap: wrap; gap: 1rem; }
+}
+
+@media (max-width: 400px) {
+  .hero-title { font-size: 13vw; }
+  .screen-grid { grid-template-columns: 1fr; }
+  .scr-wide { grid-column: span 1; }
+}
+
 </style>
 </head>
 <body>
